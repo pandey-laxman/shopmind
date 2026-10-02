@@ -1,0 +1,32 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+
+trigger:
+  - main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.12'
+    displayName: 'Set up Python 3.12'
+
+  - script: |
+      curl -LsSf https://astral.sh/uv/install.sh | sh
+      echo "##vso[task.prependpath]$HOME/.local/bin"
+      uv --version
+    displayName: 'Install uv'
+
+  - script: uv sync --locked
+    displayName: 'Install dependencies'
+
+  - script: uv run ruff check .
+    displayName: 'Run Ruff'
+
+  - script: uv run pytest
+    displayName: 'Run tests'
