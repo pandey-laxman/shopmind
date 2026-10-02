@@ -1,0 +1,13 @@
+[project]
+name = "shopmind"
+version = "0.1.0"
+description = "AI-powered commerce platform exploring RAG, MCP, and agentic workflows"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "ruff",
+]
