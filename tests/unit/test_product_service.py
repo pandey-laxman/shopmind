@@ -46,7 +46,16 @@ def test_get_products_returns_page_and_pagination_metadata():
         "current_page": 1,
         "page_size": 20,
     }
-    mock_repository.get_page.assert_called_once_with(0, 20)
+    mock_repository.get_page.assert_called_once_with(
+        offset=0,
+        limit=20,
+        category=None,
+        min_price=None,
+        max_price=None,
+        search=None,
+        sort_by="id",
+        sort_order="asc",
+    )
 
 
 def test_get_products_returns_zero_total_when_no_products():
