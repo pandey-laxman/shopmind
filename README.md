@@ -1,6 +1,60 @@
 # shopmind
 AI-powered commerce platform exploring RAG, tool calling, MCP, and agentic workflows.
 
+## Minimal MCP server
+
+The MCP application uses the official Python MCP SDK 2.3.0 and runs as a separate
+process. The tools call the commerce API, but MCP never accesses the database
+directly or imports commerce services/repositories. From the repository root:
+
+```sh
+uv sync
+uv run python -m shopmind_mcp.server
+```
+
+The SDK serves Streamable HTTP at `http://127.0.0.1:8001/mcp` using its default
+transport settings except for the port. MCP uses port 8001, while the commerce
+API uses port 8000, so both can run simultaneously. The MCP server does not
+authenticate incoming requests. `get_current_user` reads the request's
+`Authorization: Bearer <JWT>` header and forwards the token to the API, which
+validates it. This is for local development, not public deployment.
+
+The `search_products(query: str, limit: int = 10)` tool calls
+`GET /products` with `search=query`, `page_size=limit`, and `page=1`.
+Queries must contain non-whitespace text and be at most 200 characters; `limit`
+must be an integer from 1 to 20. Each returned product contains only `name`,
+`description`, `image_url`, and `price` (a decimal string). Descriptions and image
+URLs may be null. IDs, SKUs, active flags, timestamps, and pagination are omitted.
+For example, a call with `{"query": "keyboard"}` can return:
+
+```json
+{"products": [{"name": "USB Keyboard", "description": null, "image_url": null, "price": "29.99"}]}
+```
+
+The `get_current_user()` tool calls `GET /auth/me` with the incoming Bearer
+token. It returns only the customer's `id`, `name`, and `email`.
+
+Use an MCP-compatible client with Streamable HTTP to discover and invoke the
+tool; opening the endpoint directly in a browser is not a tool invocation.
+
+The API URL defaults to `http://127.0.0.1:8000`. Override it via the process
+environment, for example `SHOPMIND_API_BASE_URL=http://127.0.0.1:9000`.
+The HTTP client uses a 3-second connect timeout and 10-second read/write/pool
+timeouts, with no retries or redirects. API/network failures and invalid API
+responses produce MCP tool errors, never empty success results. Only
+`get_current_user` forwards the Bearer token, and only to the ShopMind API.
+
+For a temporary local development smoke test, start the API and MCP server, then
+run in another terminal:
+
+```sh
+uv run python -m shopmind_mcp.smoke_client
+```
+
+The script connects to `http://127.0.0.1:8001/mcp`, initializes a session, lists
+tools, calls `search_products` with `query="Apple"` and `limit=5`, and prints the
+result. Connection errors remain visible; a tool error exits with a nonzero code.
+
 ## Inventory
 
 Inventory tracks one stock quantity per product at a single logical location.

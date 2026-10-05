@@ -9,6 +9,8 @@ dependencies = [
     "argon2-cffi>=25.1.0",
     "email-validator>=2.0.0",
     "fastapi>=0.142.2",
+    "httpx>=0.28.1",
+    "mcp[cli]==2.3.0",
     "psycopg[binary]>=3.3.6",
     "pydantic-settings>=2.15.0",
     "PyJWT>=2.10.1",
@@ -18,7 +20,6 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "httpx>=0.28.1",
     "pytest",
     "ruff",
 ]
