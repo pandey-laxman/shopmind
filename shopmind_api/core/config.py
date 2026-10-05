@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import Field, SecretStr
 
 
 class Settings(BaseSettings):
@@ -6,6 +7,8 @@ class Settings(BaseSettings):
     APP_VERSION: str = "0.1.0"
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
+    JWT_SECRET: SecretStr | None = None
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(default=1440, ge=1)
 
     POSTGRES_HOST: str = "localhost"
     POSTGRES_PORT: int = 5432

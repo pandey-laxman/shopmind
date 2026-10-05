@@ -1,6 +1,12 @@
 from shopmind_api.core.database import Base
 from shopmind_api.models.product import Product
 from shopmind_api.models.category import Category
+from shopmind_api.models.inventory import Inventory  # noqa: F401
+from shopmind_api.models.customer import Customer  # noqa: F401
+from shopmind_api.models.cart_item import CartItem  # noqa: F401
+from shopmind_api.models.order import Order  # noqa: F401
+from shopmind_api.models.order_item import OrderItem  # noqa: F401
+from shopmind_api.models.payment import Payment  # noqa: F401
 
 
 from logging.config import fileConfig
